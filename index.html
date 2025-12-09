@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soal Online Estimasi Biaya Konstruksi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #6a11cb;
+            --secondary-color: #2575fc;
+            --success-color: #00d2d3;
+            --danger-color: #ff416c;
+            --warning-color: #ff9a00;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --white: #ffffff;
+            --gradient-1: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            --gradient-2: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+            --gradient-3: linear-gradient(135deg, #00d2d3 0%, #54a0ff 100%);
+            --gradient-4: linear-gradient(135deg, #ff9a00 0%, #ff6a00 100%);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            color: var(--dark-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: var(--gradient-1);
+            color: var(--white);
+            padding: 30px 0;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            animation: pulse 4s infinite alternate;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            100% { transform: scale(1.2); opacity: 0.8; }
+        }
+        
+        header h1 {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+        
+        header p {
+            font-size: 16px;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .card {
+            background-color: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            margin-top: 40px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--gradient-1);
+        }
+        
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 16px;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(37, 117, 252, 0.2);
+        }
+        
+        button {
+            background: var(--gradient-1);
+            color: var(--white);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(106, 17, 203, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        button::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: left 0.5s ease;
+        }
+        
+        button:hover::before {
+            left: 100%;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(106, 17, 203, 0.4);
+        }
+        
+        button:disabled {
+            background: #ced4da;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .btn-danger {
+            background: var(--gradient-2);
+            box-shadow: 0 4px 15px rgba(255, 65, 108, 0.3);
+        }
+        
+        .btn-danger:hover {
+            box-shadow: 0 7px 20px rgba(255, 65, 108, 0.4);
+        }
+        
+        .btn-success {
+            background: var(--gradient-3);
+            box-shadow: 0 4px 15px rgba(0, 210, 211, 0.3);
+        }
+        
+        .btn-success:hover {
+            box-shadow: 0 7px 20px rgba(0, 210, 211, 0.4);
+        }
+        
+        .timer {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--danger-color);
+            margin-bottom: 25px;
+            text-align: center;
+            padding: 15px;
+            border-radius: 50px;
+            background: rgba(255, 65, 108, 0.1);
+            display: inline-block;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .question-container {
+            margin-bottom: 40px;
+        }
+        
+        .question-number {
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            font-size: 18px;
+            display: inline-block;
+            padding: 8px 20px;
+            background: rgba(37, 117, 252, 0.1);
+            border-radius: 30px;
+        }
+        
+        .question-text {
+            font-size: 20px;
+            margin-bottom: 25px;
+            font-weight: 600;
+            color: var(--dark-color);
+            line-height: 1.5;
+        }
+        
+        .options {
+            list-style-type: none;
+        }
+        
+        .option-item {
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .option-item input[type="radio"] {
+            margin-right: 15px;
+            width: 20px;
+            height: 20px;
+            accent-color: var(--secondary-color);
+        }
+        
+        .option-item label {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            border: 2px solid transparent;
+            font-weight: 500;
+        }
+        
+        .option-item label:hover {
+            background: rgba(37, 117, 252, 0.1);
+            border-color: rgba(37, 117, 252, 0.3);
+            transform: translateX(5px);
+        }
+        
+        .option-item input[type="radio"]:checked + label {
+            background: rgba(37, 117, 252, 0.15);
+            border-color: var(--secondary-color);
+            font-weight: 600;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+        }
+        
+        .question-indicator {
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: 600;
+            font-size: 18px;
+            color: var(--primary-color);
+        }
+        
+        .question-nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 30px;
+        }
+        
+        .question-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f9fa;
+            border: 2px solid #e1e8ed;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+        
+        .question-btn:hover {
+            background-color: rgba(37, 117, 252, 0.1);
+            border-color: var(--secondary-color);
+            transform: scale(1.1);
+        }
+        
+        .question-btn.active {
+            background: var(--gradient-1);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 10px rgba(106, 17, 203, 0.3);
+        }
+        
+        .question-btn.answered {
+            background: var(--gradient-3);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 10px rgba(0, 210, 211, 0.3);
+        }
+        
+        .result-container {
+            text-align: center;
+        }
+        
+        .result-container h2 {
+            color: var(--success-color);
+            margin-bottom: 25px;
+            font-size: 36px;
+            font-weight: 800;
+            text-shadow: 0 2px 10px rgba(0, 210, 211, 0.2);
+        }
+        
+        .score {
+            font-size: 72px;
+            font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 30px 0;
+            line-height: 1;
+            animation: scoreAnimation 1.5s ease;
+        }
+        
+        @keyframes scoreAnimation {
+            0% { transform: scale(0.5); opacity: 0; }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .student-info {
+            background: linear-gradient(135deg, rgba(106, 17, 203, 0.05) 0%, rgba(37, 117, 252, 0.05) 100%);
+            padding: 25px;
+            border-radius: 16px;
+            margin: 30px 0;
+            border: 2px solid rgba(37, 117, 252, 0.1);
+        }
+        
+        .student-info p {
+            margin: 12px 0;
+            font-size: 18px;
+            font-weight: 500;
+        }
+        
+        .student-info strong {
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+        
+        .actions {
+            margin-top: 40px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .error-message {
+            color: var(--danger-color);
+            margin-top: 10px;
+            display: none;
+            font-weight: 500;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .loading i {
+            font-size: 36px;
+            animation: spin 1s linear infinite;
+            color: var(--secondary-color);
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--gradient-1);
+            color: white;
+            padding: 18px 25px;
+            border-radius: 50px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 1000;
+            font-weight: 600;
+            max-width: 300px;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .floating-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .shape {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 20s infinite linear;
+        }
+        
+        .shape:nth-child(1) {
+            top: 10%;
+            left: 10%;
+            width: 80px;
+            height: 80px;
+            background: var(--gradient-1);
+            border-radius: 50%;
+            animation-duration: 25s;
+        }
+        
+        .shape:nth-child(2) {
+            top: 70%;
+            left: 80%;
+            width: 120px;
+            height: 120px;
+            background: var(--gradient-2);
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            animation-duration: 30s;
+            animation-direction: reverse;
+        }
+        
+        .shape:nth-child(3) {
+            top: 40%;
+            left: 5%;
+            width: 100px;
+            height: 100px;
+            background: var(--gradient-3);
+            border-radius: 50%;
+            animation-duration: 35s;
+        }
+        
+        .shape:nth-child(4) {
+            top: 20%;
+            left: 70%;
+            width: 150px;
+            height: 150px;
+            background: var(--gradient-4);
+            border-radius: 63% 37% 54% 46% / 55% 48% 52% 45%;
+            animation-duration: 40s;
+            animation-direction: reverse;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+            100% { transform: translateY(0) rotate(0deg); }
+        }
+        
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: #f0f;
+            position: absolute;
+            animation: confetti-fall 3s linear forwards;
+        }
+        
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .card {
+                padding: 25px;
+                margin-top: 25px;
+            }
+            
+            header h1 {
+                font-size: 26px;
+            }
+            
+            .question-text {
+                font-size: 18px;
+            }
+            
+            .navigation {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+            
+            .score {
+                font-size: 60px;
+            }
+            
+            .toast {
+                right: 15px;
+                bottom: 15px;
+                left: 15px;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <header>
+        <div class="container">
+            <h1><i class="fas fa-graduation-cap"></i> Soal Online Estimasi Biaya Konstruksi</h1>
+            <p>Pelajaran: Estimasi Biaya Konstruksi | Kelas: XI DPIB | Guru: Gazali Rahman, ST | SMK Muhammadiyah Berau</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Token Page -->
+        <div id="token-page" class="page active">
+            <div class="card">
+                <h2 style="text-align: center; margin-bottom: 30px; color: var(--primary-color); font-size: 28px; font-weight: 800;">
+                    <i class="fas fa-key"></i> Masukkan Token Akses
+                </h2>
+                <div class="form-group">
+                    <label for="token"><i class="fas fa-lock"></i> Token:</label>
+                    <input type="text" id="token" placeholder="Masukkan token akses">
+                    <div id="token-error" class="error-message"><i class="fas fa-exclamation-circle"></i> Token tidak valid. Silakan coba lagi.</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="student-name"><i class="fas fa-user"></i> Nama Siswa:</label>
+                    <select id="student-name">
+                        <option value="">Pilih nama siswa</option>
+                        <option value="Ahmad Luthfi Zulfikar">Ahmad Luthfi Zulfikar</option>
+                        <option value="Anjanitha">Anjanitha</option>
+                        <option value="Aufa Barraq Yauqi Gunawan">Aufa Barraq Yauqi Gunawan</option>
+                        <option value="Daffa Ahmad Zaki">Daffa Ahmad Zaki</option>
+                        <option value="Dimas Setiawan">Dimas Setiawan</option>
+                        <option value="Ihsan Syariif Maulana Purwanto">Ihsan Syariif Maulana Purwanto</option>
+                        <option value="Mahmud Ahmadinejad">Mahmud Ahmadinejad</option>
+                        <option value="Muhammad Nazril Al- Maheza">Muhammad Nazril Al- Maheza</option>
+                        <option value="Muhammad Raihan Zain">Muhammad Raihan Zain</option>
+                        <option value="Nadya Ayu Putri">Nadya Ayu Putri</option>
+                        <option value="Natasya Fardela">Natasya Fardela</option>
+                        <option value="Nur Aulia">Nur Aulia</option>
+                        <option value="Riana">Riana</option>
+                        <option value="Riski Aditiya Pratama">Riski Aditiya Pratama</option>
+                        <option value="Sintiya Bella">Sintiya Bella</option>
+                    </select>
+                </div>
+                
+                <button id="access-btn"><i class="fas fa-sign-in-alt"></i> Akses Soal</button>
+            </div>
+        </div>
+
+        <!-- Quiz Page -->
+        <div id="quiz-page" class="page">
+            <div class="card">
+                <div style="text-align: center;">
+                    <div class="timer" id="timer"><i class="fas fa-clock"></i> 25:00</div>
+                </div>
+                <div class="question-indicator" id="question-indicator"><i class="fas fa-list-ol"></i> Soal 1/30</div>
+                
+                <div class="question-container">
+                    <div class="question-number" id="question-number"><i class="fas fa-question-circle"></i> Soal 1</div>
+                    <div class="question-text" id="question-text">Memuat soal...</div>
+                    <ul class="options" id="options">
+                        <!-- Options will be dynamically inserted here -->
+                    </ul>
+                </div>
+                
+                <div class="navigation">
+                    <button id="prev-btn" disabled><i class="fas fa-arrow-left"></i> Sebelumnya</button>
+                    <button id="next-btn">Selanjutnya <i class="fas fa-arrow-right"></i></button>
+                    <button id="submit-btn" class="btn-danger" style="display: none;"><i class="fas fa-paper-plane"></i> Kumpulkan</button>
+                </div>
+                
+                <div class="question-nav" id="question-nav">
+                    <!-- Question navigation buttons will be dynamically inserted here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Page -->
+        <div id="result-page" class="page">
+            <div class="card">
+                <div class="result-container">
+                    <h2><i class="fas fa-check-circle"></i> Terima Kasih</h2>
+                    <p style="font-size: 18px; margin-bottom: 20px;">Anda telah menyelesaikan soal online Estimasi Biaya Konstruksi</p>
+                    
+                    <div class="student-info">
+                        <p><strong><i class="fas fa-user"></i> Nama:</strong> <span id="result-name">-</span></p>
+                        <p><strong><i class="fas fa-school"></i> Kelas:</strong> XI DPIB</p>
+                        <p><strong><i class="fas fa-book"></i> Pelajaran:</strong> Estimasi Biaya Konstruksi</p>
+                    </div>
+                    
+                    <div class="score" id="score">0</div>
+                    <p style="font-size: 22px; font-weight: 600; color: var(--dark-color);">Nilai Anda</p>
+                    
+                    <div class="actions">
+                        <button id="share-btn" class="btn-success"><i class="fas fa-share-alt"></i> Share Hasil</button>
+                        <button id="retry-btn"><i class="fas fa-redo"></i> Ulangi Tes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="loading" id="loading">
+        <i class="fas fa-spinner"></i>
+        <p style="margin-top: 15px; font-weight: 600;">Memproses...</p>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // Data token yang valid
+        const validTokens = ["EBK2023", "KONSTRUKSI", "XI2023", "DPIB123"];
+        
+        // Bank soal
+        const questionBank = [
+            {
+                question: "Estimasi biaya konstruksi adalah …",
+                options: [
+                    "Proses perencanaan desain bangunan",
+                    "Perkiraan biaya yang dibutuhkan untuk menyelesaikan suatu proyek",
+                    "Pengawasan terhadap jalannya proyek",
+                    "Penilaian kualitas bahan",
+                    "Pelaksanaan pekerjaan di lapangan"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Tujuan utama estimasi biaya adalah …",
+                options: [
+                    "Menentukan keuntungan kontraktor",
+                    "Mengetahui kebutuhan biaya dan sumber daya proyek",
+                    "Menentukan waktu pelaksanaan proyek",
+                    "Menentukan metode pelaksanaan",
+                    "Menghitung keuntungan investor"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Dokumen penting dalam proses estimasi adalah …",
+                options: [
+                    "Laporan harian",
+                    "Gambar kerja (shop drawing)",
+                    "Daftar hadir pekerja",
+                    "Surat kontrak kerja",
+                    "Kuitansi pembelian bahan"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Orang yang bertanggung jawab melakukan estimasi biaya disebut …",
+                options: [
+                    "Arsitek",
+                    "Quantity Surveyor",
+                    "Mandor",
+                    "Drafter",
+                    "Site Engineer"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Estimasi biaya termasuk dalam tahap …",
+                options: [
+                    "Pelaksanaan",
+                    "Perencanaan",
+                    "Pemeliharaan",
+                    "Pengawasan",
+                    "Serah terima proyek"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Estimasi pendahuluan biasanya digunakan pada …",
+                options: [
+                    "Tahap desain akhir",
+                    "Tahap perencanaan awal",
+                    "Saat pelaksanaan proyek",
+                    "Setelah proyek selesai",
+                    "Pada laporan keuangan"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Estimasi detail dilakukan untuk …",
+                options: [
+                    "Mendapatkan harga pasti proyek",
+                    "Menentukan ide desain",
+                    "Mengukur kemajuan pekerjaan",
+                    "Mengetahui kebutuhan alat",
+                    "Menentukan waktu pelaksanaan"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "Estimasi cepat sering disebut juga …",
+                options: [
+                    "Detail estimate",
+                    "Preliminary estimate",
+                    "Budget estimate",
+                    "Quantity estimate",
+                    "Total estimate"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Hasil dari proses estimasi biaya adalah …",
+                options: [
+                    "Rencana Anggaran Biaya (RAB)",
+                    "Gambar kerja",
+                    "Jadwal kerja",
+                    "Laporan progres",
+                    "Surat perintah kerja"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "Faktor utama yang mempengaruhi hasil estimasi adalah …",
+                options: [
+                    "Warna cat",
+                    "Desain interior",
+                    "Harga bahan dan upah tenaga kerja",
+                    "Lokasi kantor",
+                    "Cuaca harian"
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "Volume pekerjaan dihitung berdasarkan …",
+                options: [
+                    "Gambar rencana",
+                    "Estimasi biaya",
+                    "Jumlah pekerja",
+                    "Daftar bahan",
+                    "Rencana kerja"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "Volume beton untuk balok dihitung dengan rumus …",
+                options: [
+                    "Panjang × Lebar",
+                    "Panjang × Tinggi",
+                    "Panjang × Lebar × Tinggi",
+                    "Lebar × Tinggi",
+                    "Luas × Tebal"
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "Satuan volume untuk pekerjaan pasangan bata adalah …",
+                options: [
+                    "m²",
+                    "m³",
+                    "liter",
+                    "kg",
+                    "unit"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Volume pekerjaan plesteran dinyatakan dalam satuan …",
+                options: [
+                    "m²",
+                    "m³",
+                    "m",
+                    "liter",
+                    "kg"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "Volume pekerjaan galian tanah dihitung berdasarkan …",
+                options: [
+                    "Luas dinding",
+                    "Luas atap",
+                    "Panjang × Lebar × Kedalaman",
+                    "Panjang × Lebar × Tinggi bangunan",
+                    "Volume pondasi"
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "Analisa harga satuan pekerjaan digunakan untuk …",
+                options: [
+                    "Menentukan waktu kerja",
+                    "Menghitung kebutuhan bahan dan upah",
+                    "Mengatur jadwal proyek",
+                    "Mengawasi pelaksanaan",
+                    "Menentukan bentuk bangunan"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Satuan upah tenaga kerja biasanya dinyatakan dalam …",
+                options: [
+                    "Rupiah per jam",
+                    "Rupiah per hari",
+                    "Rupiah per meter",
+                    "Rupiah per proyek",
+                    "Rupiah per unit"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Dalam AHS, koefisien menunjukkan …",
+                options: [
+                    "Lama waktu kerja",
+                    "Banyaknya bahan atau tenaga per satuan pekerjaan",
+                    "Jenis bahan yang dipakai",
+                    "Harga bahan per satuan",
+                    "Jumlah pekerja"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Komponen utama dalam analisa harga satuan meliputi …",
+                options: [
+                    "Bahan, upah, alat",
+                    "Cuaca, waktu, lokasi",
+                    "Desain, gambar, laporan",
+                    "Nilai proyek, keuntungan, pajak",
+                    "Beton, baja, cat"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "Hasil akhir dari analisa harga satuan adalah …",
+                options: [
+                    "Total volume",
+                    "Harga satuan pekerjaan",
+                    "Jumlah pekerja",
+                    "Waktu pelaksanaan",
+                    "Jenis alat"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Dalam menghitung kebutuhan bahan, data utama yang diperlukan adalah …",
+                options: [
+                    "Nama proyek",
+                    "Volume pekerjaan",
+                    "Gaji mandor",
+                    "Jumlah pekerja",
+                    "Lama proyek"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Harga bahan bangunan dapat diperoleh dari …",
+                options: [
+                    "Surat kontrak",
+                    "Pasar setempat atau toko bangunan",
+                    "Gambar kerja",
+                    "Laporan harian",
+                    "Laporan keuangan"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Perhitungan upah harus memperhatikan …",
+                options: [
+                    "Jarak proyek",
+                    "Jenis pekerjaan dan tingkat keahlian tenaga",
+                    "Cuaca",
+                    "Jenis bahan",
+                    "Waktu pengiriman bahan"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Dalam analisa pekerjaan beton, bahan utama yang dihitung adalah …",
+                options: [
+                    "Pasir, semen, batu pecah, air",
+                    "Semen, tanah liat, cat",
+                    "Batu bata, pasir, kayu",
+                    "Baja, paku, kayu",
+                    "Tanah, air, batu bata"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "Upah pekerjaan plesteran termasuk dalam kelompok …",
+                options: [
+                    "Tenaga kasar",
+                    "Tukang batu",
+                    "Tukang kayu",
+                    "Tukang las",
+                    "Tukang besi"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "RAB merupakan singkatan dari …",
+                options: [
+                    "Rencana Analisis Bangunan",
+                    "Rencana Anggaran Biaya",
+                    "Rancangan Anggaran Bangunan",
+                    "Rencana Awal Bangunan",
+                    "Rincian Anggaran Biaya"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Fungsi utama RAB adalah …",
+                options: [
+                    "Sebagai pedoman biaya pembangunan",
+                    "Sebagai laporan keuangan akhir",
+                    "Sebagai daftar tenaga kerja",
+                    "Sebagai pengganti gambar kerja",
+                    "Sebagai laporan proyek"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "RAB disusun berdasarkan …",
+                options: [
+                    "Hasil survei dan volume pekerjaan",
+                    "Harga jual bangunan",
+                    "Gambar pelaksanaan",
+                    "Waktu proyek",
+                    "Gaji pegawai"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "RAB disusun oleh …",
+                options: [
+                    "Mandor",
+                    "Quantity Surveyor atau estimator",
+                    "Kepala sekolah",
+                    "Drafter",
+                    "Pekerja lapangan"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Dalam tabel RAB, kolom paling kanan biasanya menunjukkan …",
+                options: [
+                    "Volume",
+                    "Satuan",
+                    "Jumlah biaya",
+                    "Jenis pekerjaan",
+                    "Harga satuan"
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "Laporan kemajuan pekerjaan disebut …",
+                options: [
+                    "RAB",
+                    "RAP",
+                    "Progress report",
+                    "Surat perintah kerja",
+                    "Data harian"
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "Jika terjadi perubahan harga bahan di lapangan, maka …",
+                options: [
+                    "Tidak perlu dicatat",
+                    "Harus diperbarui dalam laporan biaya",
+                    "Diabaikan",
+                    "Disesuaikan dengan laporan lama",
+                    "Hanya disampaikan secara lisan"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Selisih antara biaya rencana dan biaya aktual disebut …",
+                options: [
+                    "Laba",
+                    "Kerugian",
+                    "Deviasi biaya",
+                    "Surplus",
+                    "Anggaran tambahan"
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "Dalam proyek konstruksi, keuntungan kontraktor disebut …",
+                options: [
+                    "Overhead",
+                    "Profit",
+                    "Margin",
+                    "Deviasi",
+                    "Selisih"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Biaya tidak langsung dalam proyek contohnya …",
+                options: [
+                    "Upah tukang",
+                    "Sewa alat berat",
+                    "Bahan semen",
+                    "Batu bata",
+                    "Besi tulangan"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Untuk menghemat biaya proyek, estimator harus …",
+                options: [
+                    "Mengurangi bahan tanpa perhitungan",
+                    "Menggunakan bahan sesuai kebutuhan",
+                    "Mengabaikan standar mutu",
+                    "Mengurangi jumlah pekerja tanpa analisa",
+                    "Mempercepat proyek tanpa kontrol"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Analisa harga satuan dapat digunakan untuk …",
+                options: [
+                    "Mengetahui efisiensi pekerjaan",
+                    "Menghitung jumlah bahan saja",
+                    "Mengatur waktu proyek",
+                    "Menentukan desain bangunan",
+                    "Menentukan warna cat"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "Overhead cost mencakup …",
+                options: [
+                    "Biaya langsung pekerjaan",
+                    "Biaya administrasi dan operasional proyek",
+                    "Biaya bahan utama",
+                    "Biaya sewa alat",
+                    "Biaya pekerja lapangan"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "RAB yang baik harus …",
+                options: [
+                    "Disusun berdasarkan perkiraan umum",
+                    "Disusun berdasarkan data dan analisa yang akurat",
+                    "Dikerjakan tanpa gambar kerja",
+                    "Tidak perlu dicek ulang",
+                    "Mengabaikan faktor lokasi"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Hasil akhir dari seluruh perhitungan estimasi biaya adalah …",
+                options: [
+                    "Gambar rencana",
+                    "Rencana Anggaran Biaya total proyek",
+                    "Laporan harian",
+                    "Analisa waktu",
+                    "Gaji pekerja"
+                ],
+                correctAnswer: 1
+            }
+        ];
+        
+        // Variabel global
+        let currentQuestion = 0;
+        let questions = [];
+        let userAnswers = [];
+        let timer = null;
+        let timeLeft = 25 * 60; // 25 menit dalam detik
+        let studentName = "";
+        
+        // DOM Elements
+        const tokenPage = document.getElementById('token-page');
+        const quizPage = document.getElementById('quiz-page');
+        const resultPage = document.getElementById('result-page');
+        const tokenInput = document.getElementById('token');
+        const studentNameSelect = document.getElementById('student-name');
+        const accessBtn = document.getElementById('access-btn');
+        const tokenError = document.getElementById('token-error');
+        const timerElement = document.getElementById('timer');
+        const questionIndicator = document.getElementById('question-indicator');
+        const questionNumber = document.getElementById('question-number');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const questionNav = document.getElementById('question-nav');
+        const resultName = document.getElementById('result-name');
+        const scoreElement = document.getElementById('score');
+        const shareBtn = document.getElementById('share-btn');
+        const retryBtn = document.getElementById('retry-btn');
+        const loading = document.getElementById('loading');
+        const toast = document.getElementById('toast');
+        
+        // Event Listeners
+        accessBtn.addEventListener('click', validateToken);
+        prevBtn.addEventListener('click', showPreviousQuestion);
+        nextBtn.addEventListener('click', showNextQuestion);
+        submitBtn.addEventListener('click', submitQuiz);
+        shareBtn.addEventListener('click', shareResult);
+        retryBtn.addEventListener('click', retryQuiz);
+        
+        // Fungsi untuk menampilkan toast notification
+        function showToast(message, duration = 3000) {
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, duration);
+        }
+        
+        // Fungsi untuk validasi token
+        function validateToken() {
+            const token = tokenInput.value.trim();
+            const name = studentNameSelect.value;
+            
+            if (!token) {
+                tokenError.textContent = "Token tidak boleh kosong.";
+                tokenError.style.display = 'block';
+                return;
+            }
+            
+            if (!name) {
+                showToast("Silakan pilih nama siswa.");
+                return;
+            }
+            
+            if (validTokens.includes(token)) {
+                studentName = name;
+                initializeQuiz();
+            } else {
+                tokenError.textContent = "Token tidak valid. Silakan coba lagi.";
+                tokenError.style.display = 'block';
+            }
+        }
+        
+        // Fungsi untuk menginisialisasi kuis
+        function initializeQuiz() {
+            // Acak soal dan pilih 30 soal
+            const shuffledQuestions = [...questionBank].sort(() => Math.random() - 0.5);
+            questions = shuffledQuestions.slice(0, 30);
+            
+            // Inisialisasi array jawaban
+            userAnswers = new Array(questions.length).fill(null);
+            
+            // Reset timer
+            timeLeft = 25 * 60;
+            
+            // Buat navigasi soal
+            createQuestionNavigation();
+            
+            // Tampilkan halaman kuis
+            showPage('quiz-page');
+            
+            // Tampilkan soal pertama
+            showQuestion(0);
+            
+            // Mulai timer
+            startTimer();
+            
+            showToast("Kuis dimulai. Anda memiliki waktu 25 menit.");
+        }
+        
+        // Fungsi untuk membuat navigasi soal
+        function createQuestionNavigation() {
+            questionNav.innerHTML = '';
+            
+            for (let i = 0; i < questions.length; i++) {
+                const btn = document.createElement('div');
+                btn.className = 'question-btn';
+                btn.textContent = i + 1;
+                btn.addEventListener('click', () => showQuestion(i));
+                questionNav.appendChild(btn);
+            }
+        }
+        
+        // Fungsi untuk menampilkan halaman
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            document.getElementById(pageId).classList.add('active');
+        }
+        
+        // Fungsi untuk menampilkan soal
+        function showQuestion(index) {
+            // Simpan jawaban sebelumnya
+            saveCurrentAnswer();
+            
+            // Update soal saat ini
+            currentQuestion = index;
+            
+            // Update indikator soal
+            questionIndicator.innerHTML = `<i class="fas fa-list-ol"></i> Soal ${index + 1}/${questions.length}`;
+            questionNumber.innerHTML = `<i class="fas fa-question-circle"></i> Soal ${index + 1}`;
+            
+            // Update teks soal
+            questionText.textContent = questions[index].question;
+            
+            // Update opsi
+            optionsContainer.innerHTML = '';
+            questions[index].options.forEach((option, i) => {
+                const li = document.createElement('li');
+                li.className = 'option-item';
+                
+                const input = document.createElement('input');
+                input.type = 'radio';
+                input.id = `option-${i}`;
+                input.name = 'answer';
+                input.value = i;
+                
+                if (userAnswers[index] === i) {
+                    input.checked = true;
+                }
+                
+                const label = document.createElement('label');
+                label.htmlFor = `option-${i}`;
+                label.textContent = option;
+                
+                li.appendChild(input);
+                li.appendChild(label);
+                optionsContainer.appendChild(li);
+            });
+            
+            // Update navigasi
+            prevBtn.disabled = index === 0;
+            nextBtn.style.display = index === questions.length - 1 ? 'none' : 'inline-block';
+            submitBtn.style.display = index === questions.length - 1 ? 'inline-block' : 'none';
+            
+            // Update navigasi soal
+            updateQuestionNavigation();
+        }
+        
+        // Fungsi untuk memperbarui navigasi soal
+        function updateQuestionNavigation() {
+            const buttons = questionNav.querySelectorAll('.question-btn');
+            
+            buttons.forEach((btn, i) => {
+                btn.classList.remove('active', 'answered');
+                
+                if (i === currentQuestion) {
+                    btn.classList.add('active');
+                }
+                
+                if (userAnswers[i] !== null) {
+                    btn.classList.add('answered');
+                }
+            });
+        }
+        
+        // Fungsi untuk menyimpan jawaban saat ini
+        function saveCurrentAnswer() {
+            const selectedOption = document.querySelector('input[name="answer"]:checked');
+            
+            if (selectedOption) {
+                userAnswers[currentQuestion] = parseInt(selectedOption.value);
+            }
+        }
+        
+        // Fungsi untuk menampilkan soal sebelumnya
+        function showPreviousQuestion() {
+            if (currentQuestion > 0) {
+                showQuestion(currentQuestion - 1);
+            }
+        }
+        
+        // Fungsi untuk menampilkan soal berikutnya
+        function showNextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                showQuestion(currentQuestion + 1);
+            }
+        }
+        
+        // Fungsi untuk memulai timer
+        function startTimer() {
+            if (timer) {
+                clearInterval(timer);
+            }
+            
+            timer = setInterval(() => {
+                timeLeft--;
+                
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                
+                timerElement.innerHTML = `<i class="fas fa-clock"></i> ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    submitQuiz();
+                }
+            }, 1000);
+        }
+        
+        // Fungsi untuk mengirim kuis
+        function submitQuiz() {
+            // Simpan jawaban terakhir
+            saveCurrentAnswer();
+            
+            // Hentikan timer
+            clearInterval(timer);
+            
+            // Hitung nilai
+            let correctAnswers = 0;
+            
+            for (let i = 0; i < questions.length; i++) {
+                if (userAnswers[i] === questions[i].correctAnswer) {
+                    correctAnswers++;
+                }
+            }
+            
+            const score = Math.round((correctAnswers / questions.length) * 100);
+            
+            // Tampilkan halaman hasil
+            showResult(score);
+            
+            // Simpan hasil ke Google Sheets
+            saveResultToGoogleSheets(score);
+            
+            // Tambahkan efek confetti jika nilai tinggi
+            if (score >= 80) {
+                createConfetti();
+            }
+        }
+        
+        // Fungsi untuk menampilkan hasil
+        function showResult(score) {
+            resultName.textContent = studentName;
+            scoreElement.textContent = score;
+            
+            showPage('result-page');
+        }
+        
+        // Fungsi untuk menyimpan hasil ke Google Sheets
+        function saveResultToGoogleSheets(score) {
+            const url = "https://script.google.com/macros/s/AKfycbyErQPlncI4_1WgUbwW79MsevC-8ezp4w11W95M5lYTNwrbHCoYxjrMwBuUkdHQVDBo/exec";
+            
+            const data = {
+                name: studentName,
+                class: "XI DPIB",
+                subject: "Estimasi Biaya Konstruksi",
+                score: score,
+                date: new Date().toISOString()
+            };
+            
+            // Tampilkan loading
+            loading.style.display = 'block';
+            
+            fetch(url, {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                loading.style.display = 'none';
+                showToast("Hasil berhasil disimpan.");
+            })
+            .catch(error => {
+                loading.style.display = 'none';
+                showToast("Gagal menyimpan hasil. Silakan coba lagi.");
+                console.error('Error:', error);
+            });
+        }
+        
+        // Fungsi untuk berbagi hasil
+        function shareResult() {
+            const score = scoreElement.textContent;
+            const text = `Saya ${studentName} dari kelas XI DPIB telah menyelesaikan kuis Estimasi Biaya Konstruksi dengan nilai ${score}.`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Hasil Kuis Estimasi Biaya Konstruksi',
+                    text: text
+                })
+                .catch(error => console.log('Error sharing:', error));
+            } else {
+                // Fallback untuk browser yang tidak mendukung Web Share API
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                
+                showToast("Teks telah disalin ke clipboard.");
+            }
+        }
+        
+        // Fungsi untuk mengulangi tes
+        function retryQuiz() {
+            // Reset variabel
+            currentQuestion = 0;
+            userAnswers = [];
+            timeLeft = 25 * 60;
+            
+            // Reset form
+            tokenInput.value = '';
+            studentNameSelect.value = '';
+            tokenError.style.display = 'none';
+            
+            // Tampilkan halaman token
+            showPage('token-page');
+        }
+        
+        // Fungsi untuk membuat efek confetti
+        function createConfetti() {
+            const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4caf50', '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800', '#ff5722'];
+            
+            for (let i = 0; i < 100; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.width = Math.random() * 10 + 5 + 'px';
+                    confetti.style.height = confetti.style.width;
+                    confetti.style.opacity = Math.random() * 0.8 + 0.2;
+                    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                    
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 3000);
+                }, i * 30);
+            }
+        }
+    </script>
+</body>
+</html>
