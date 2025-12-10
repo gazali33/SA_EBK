@@ -641,6 +641,71 @@
             }
         }
         
+        .confirmation-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .confirmation-modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            transform: scale(0.7);
+            transition: transform 0.3s ease;
+        }
+        
+        .confirmation-modal.show .modal-content {
+            transform: scale(1);
+        }
+        
+        .modal-content h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        
+        .modal-content p {
+            margin-bottom: 25px;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        
+        .modal-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .btn-cancel {
+            background-color: #e1e8ed;
+            color: var(--dark-color);
+            box-shadow: none;
+        }
+        
+        .btn-cancel:hover {
+            background-color: #d1d8dd;
+            box-shadow: none;
+        }
+        
         @media (max-width: 768px) {
             .container {
                 padding: 15px;
@@ -758,7 +823,7 @@
                 <div class="navigation">
                     <button id="prev-btn" disabled><i class="fas fa-arrow-left"></i> Sebelumnya</button>
                     <button id="next-btn">Selanjutnya <i class="fas fa-arrow-right"></i></button>
-                    <button id="submit-btn" class="btn-danger" style="display: none;"><i class="fas fa-paper-plane"></i> Kumpulkan</button>
+                    <button id="submit-btn" class="btn-danger"><i class="fas fa-paper-plane"></i> Kumpulkan</button>
                 </div>
                 
                 <div class="question-nav" id="question-nav">
@@ -799,9 +864,21 @@
 
     <div class="toast" id="toast"></div>
 
+    <!-- Confirmation Modal -->
+    <div class="confirmation-modal" id="confirmation-modal">
+        <div class="modal-content">
+            <h3><i class="fas fa-exclamation-triangle"></i> Konfirmasi Pengumpulan</h3>
+            <p id="confirmation-message">Apakah Anda yakin ingin mengumpulkan jawaban sekarang?</p>
+            <div class="modal-actions">
+                <button id="cancel-btn" class="btn-cancel"><i class="fas fa-times"></i> Batal</button>
+                <button id="confirm-btn" class="btn-danger"><i class="fas fa-check"></i> Ya, Kumpulkan</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Data token yang valid
-        const validTokens = ["EBK2023", "KONSTRUKSI", "AI2025", "XI2023", "DPIB123"];
+        const validTokens = ["EBK2023", "KONSTRUKSI", "XI2023", "DPIB123"];
         
         // Bank soal
         const questionBank = [
@@ -1279,14 +1356,20 @@
         const retryBtn = document.getElementById('retry-btn');
         const loading = document.getElementById('loading');
         const toast = document.getElementById('toast');
+        const confirmationModal = document.getElementById('confirmation-modal');
+        const confirmationMessage = document.getElementById('confirmation-message');
+        const cancelBtn = document.getElementById('cancel-btn');
+        const confirmBtn = document.getElementById('confirm-btn');
         
         // Event Listeners
         accessBtn.addEventListener('click', validateToken);
         prevBtn.addEventListener('click', showPreviousQuestion);
         nextBtn.addEventListener('click', showNextQuestion);
-        submitBtn.addEventListener('click', submitQuiz);
+        submitBtn.addEventListener('click', showConfirmationModal);
         shareBtn.addEventListener('click', shareResult);
         retryBtn.addEventListener('click', retryQuiz);
+        cancelBtn.addEventListener('click', hideConfirmationModal);
+        confirmBtn.addEventListener('click', submitQuiz);
         
         // Fungsi untuk menampilkan toast notification
         function showToast(message, duration = 3000) {
@@ -1428,7 +1511,9 @@
             // Update navigasi
             prevBtn.disabled = index === 0;
             nextBtn.style.display = index === questions.length - 1 ? 'none' : 'inline-block';
-            submitBtn.style.display = index === questions.length - 1 ? 'inline-block' : 'none';
+            
+            // Tombol kirim selalu terlihat
+            submitBtn.style.display = 'inline-block';
             
             // Update navigasi soal
             updateQuestionNavigation();
@@ -1495,8 +1580,36 @@
             }, 1000);
         }
         
+        // Fungsi untuk menampilkan modal konfirmasi
+        function showConfirmationModal() {
+            // Simpan jawaban saat ini
+            saveCurrentAnswer();
+            
+            // Hitung jumlah soal yang sudah dijawab
+            const answeredCount = userAnswers.filter(answer => answer !== null).length;
+            const totalCount = questions.length;
+            
+            // Set pesan konfirmasi
+            if (answeredCount === totalCount) {
+                confirmationMessage.textContent = "Anda telah menjawab semua soal. Apakah Anda yakin ingin mengumpulkan jawaban sekarang?";
+            } else {
+                confirmationMessage.textContent = `Anda telah menjawab ${answeredCount} dari ${totalCount} soal. Apakah Anda yakin ingin mengumpulkan jawaban sekarang?`;
+            }
+            
+            // Tampilkan modal
+            confirmationModal.classList.add('show');
+        }
+        
+        // Fungsi untuk menyembunyikan modal konfirmasi
+        function hideConfirmationModal() {
+            confirmationModal.classList.remove('show');
+        }
+        
         // Fungsi untuk mengirim kuis
         function submitQuiz() {
+            // Sembunyikan modal konfirmasi
+            hideConfirmationModal();
+            
             // Simpan jawaban terakhir
             saveCurrentAnswer();
             
@@ -1534,9 +1647,9 @@
             showPage('result-page');
         }
         
-        // Fungsi untuk menyimpan hasil ke Google Sheets, sudah update new sheet
+        // Fungsi untuk menyimpan hasil ke Google Sheets
         function saveResultToGoogleSheets(score) {
-            const url = "https://script.google.com/macros/s/AKfycbxA1OB-Egf2MJG8o8z0s5e_lBeDnGloQkZBBk2M69jy-4ZVnh0l1HASsZzO_0Q9CVDH/exec";
+            const url = "https://script.google.com/macros/s/AKfycbyErQPlncI4_1WgUbwW79MsevC-8ezp4w11W95M5lYTNwrbHCoYxjrMwBuUkdHQVDBo/exec";
             
             const data = {
                 name: studentName,
