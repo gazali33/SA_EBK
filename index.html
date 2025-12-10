@@ -213,6 +213,15 @@
             box-shadow: 0 7px 20px rgba(0, 210, 211, 0.4);
         }
         
+        .btn-warning {
+            background: var(--gradient-4);
+            box-shadow: 0 4px 15px rgba(255, 154, 0, 0.3);
+        }
+        
+        .btn-warning:hover {
+            box-shadow: 0 7px 20px rgba(255, 154, 0, 0.4);
+        }
+        
         .timer {
             font-size: 28px;
             font-weight: 800;
@@ -560,6 +569,18 @@
             opacity: 1;
         }
         
+        .toast.error {
+            background: var(--gradient-2);
+        }
+        
+        .toast.success {
+            background: var(--gradient-3);
+        }
+        
+        .toast.warning {
+            background: var(--gradient-4);
+        }
+        
         .floating-shapes {
             position: fixed;
             top: 0;
@@ -706,6 +727,16 @@
             box-shadow: none;
         }
         
+        .retry-save-container {
+            margin-top: 20px;
+            display: none;
+            text-align: center;
+        }
+        
+        .retry-save-container.show {
+            display: block;
+        }
+        
         @media (max-width: 768px) {
             .container {
                 padding: 15px;
@@ -847,6 +878,13 @@
                     
                     <div class="score" id="score">0</div>
                     <p style="font-size: 22px; font-weight: 600; color: var(--dark-color);">Nilai Anda</p>
+                    
+                    <div class="retry-save-container" id="retry-save-container">
+                        <p style="color: var(--warning-color); margin-bottom: 15px;">
+                            <i class="fas fa-exclamation-triangle"></i> Gagal menyimpan hasil ke server. Silakan coba lagi.
+                        </p>
+                        <button id="retry-save-btn" class="btn-warning"><i class="fas fa-sync"></i> Coba Simpan Lagi</button>
+                    </div>
                     
                     <div class="actions">
                         <button id="share-btn" class="btn-success"><i class="fas fa-share-alt"></i> Share Hasil</button>
@@ -1331,6 +1369,7 @@
         let timer = null;
         let timeLeft = 25 * 60; // 25 menit dalam detik
         let studentName = "";
+        let quizData = null; // Menyimpan data kuis untuk retry
         
         // DOM Elements
         const tokenPage = document.getElementById('token-page');
@@ -1360,6 +1399,8 @@
         const confirmationMessage = document.getElementById('confirmation-message');
         const cancelBtn = document.getElementById('cancel-btn');
         const confirmBtn = document.getElementById('confirm-btn');
+        const retrySaveContainer = document.getElementById('retry-save-container');
+        const retrySaveBtn = document.getElementById('retry-save-btn');
         
         // Event Listeners
         accessBtn.addEventListener('click', validateToken);
@@ -1370,14 +1411,23 @@
         retryBtn.addEventListener('click', retryQuiz);
         cancelBtn.addEventListener('click', hideConfirmationModal);
         confirmBtn.addEventListener('click', submitQuiz);
+        retrySaveBtn.addEventListener('click', retrySaveResult);
         
         // Fungsi untuk menampilkan toast notification
-        function showToast(message, duration = 3000) {
+        function showToast(message, type = 'info', duration = 3000) {
             toast.textContent = message;
-            toast.classList.add('show');
+            toast.className = 'toast show';
+            
+            if (type === 'error') {
+                toast.classList.add('error');
+            } else if (type === 'success') {
+                toast.classList.add('success');
+            } else if (type === 'warning') {
+                toast.classList.add('warning');
+            }
             
             setTimeout(() => {
-                toast.classList.remove('show');
+                toast.classList.remove('show', 'error', 'success', 'warning');
             }, duration);
         }
         
@@ -1393,7 +1443,7 @@
             }
             
             if (!name) {
-                showToast("Silakan pilih nama siswa.");
+                showToast("Silakan pilih nama siswa.", 'warning');
                 return;
             }
             
@@ -1430,7 +1480,7 @@
             // Mulai timer
             startTimer();
             
-            showToast("Kuis dimulai. Anda memiliki waktu 25 menit.");
+            showToast("Kuis dimulai. Anda memiliki waktu 25 menit.", 'success');
         }
         
         // Fungsi untuk membuat navigasi soal
@@ -1627,11 +1677,20 @@
             
             const score = Math.round((correctAnswers / questions.length) * 100);
             
+            // Simpan data kuis untuk retry
+            quizData = {
+                name: studentName,
+                class: "XI DPIB",
+                subject: "Estimasi Biaya Konstruksi",
+                score: score,
+                date: new Date().toISOString()
+            };
+            
             // Tampilkan halaman hasil
             showResult(score);
             
             // Simpan hasil ke Google Sheets
-            saveResultToGoogleSheets(score);
+            saveResultToGoogleSheets(quizData);
             
             // Tambahkan efek confetti jika nilai tinggi
             if (score >= 80) {
@@ -1644,41 +1703,63 @@
             resultName.textContent = studentName;
             scoreElement.textContent = score;
             
+            // Sembunyikan container retry save
+            retrySaveContainer.classList.remove('show');
+            
             showPage('result-page');
         }
         
-        // Fungsi untuk menyimpan hasil ke Google Sheets, re-Deploy
-        function saveResultToGoogleSheets(score) {
+        // Fungsi untuk menyimpan hasil ke Google Sheets
+        function saveResultToGoogleSheets(data) {
+            // URL Google Apps Script yang baru
             const url = "https://script.google.com/macros/s/AKfycbz-2uBdR84Njm-H6FC7ZQtN0197L9nocI_AhGwPMrWDK9MsypJFRxPdxe0bdYzIXw7o/exec";
-            
-            const data = {
-                name: studentName,
-                class: "XI DPIB",
-                subject: "Estimasi Biaya Konstruksi",
-                score: score,
-                date: new Date().toISOString()
-            };
             
             // Tampilkan loading
             loading.style.display = 'block';
             
-            fetch(url, {
+            // Tambahkan timestamp untuk menghindari caching
+            const timestamp = new Date().getTime();
+            const urlWithTimestamp = `${url}?t=${timestamp}`;
+            
+            fetch(urlWithTimestamp, {
                 method: 'POST',
                 body: JSON.stringify(data),
                 headers: {
                     'Content-Type': 'application/json'
                 }
             })
-            .then(response => response.json())
+            .then(response => {
+                // Cek jika response tidak ok
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 loading.style.display = 'none';
-                showToast("Hasil berhasil disimpan.");
+                
+                // Cek status dari response
+                if (data.status === 'success') {
+                    showToast("Hasil berhasil disimpan.", 'success');
+                } else {
+                    throw new Error(data.message || 'Unknown error');
+                }
             })
             .catch(error => {
                 loading.style.display = 'none';
-                showToast("Gagal menyimpan hasil. Silakan coba lagi.");
-                console.error('Error:', error);
+                console.error('Error saving to Google Sheets:', error);
+                
+                // Tampilkan opsi untuk retry
+                retrySaveContainer.classList.add('show');
+                showToast("Gagal menyimpan hasil. Silakan coba lagi.", 'error');
             });
+        }
+        
+        // Fungsi untuk mencoba menyimpan hasil lagi
+        function retrySaveResult() {
+            if (quizData) {
+                saveResultToGoogleSheets(quizData);
+            }
         }
         
         // Fungsi untuk berbagi hasil
@@ -1701,7 +1782,7 @@
                 document.execCommand('copy');
                 document.body.removeChild(textarea);
                 
-                showToast("Teks telah disalin ke clipboard.");
+                showToast("Teks telah disalin ke clipboard.", 'success');
             }
         }
         
@@ -1711,6 +1792,7 @@
             currentQuestion = 0;
             userAnswers = [];
             timeLeft = 25 * 60;
+            quizData = null;
             
             // Reset form
             tokenInput.value = '';
@@ -1747,4 +1829,3 @@
     </script>
 </body>
 </html>
-
