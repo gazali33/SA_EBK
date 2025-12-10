@@ -234,6 +234,22 @@
         
         .question-container {
             margin-bottom: 40px;
+            background: linear-gradient(135deg, rgba(106, 17, 203, 0.03) 0%, rgba(37, 117, 252, 0.03) 100%);
+            border-radius: 16px;
+            padding: 30px;
+            border: 2px solid rgba(37, 117, 252, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .question-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--gradient-1);
         }
         
         .question-number {
@@ -248,11 +264,13 @@
         }
         
         .question-text {
-            font-size: 20px;
-            margin-bottom: 25px;
+            font-size: 22px;
+            margin-bottom: 30px;
             font-weight: 600;
             color: var(--dark-color);
             line-height: 1.5;
+            position: relative;
+            z-index: 1;
         }
         
         .options {
@@ -260,39 +278,96 @@
         }
         
         .option-item {
-            margin-bottom: 15px;
+            margin-bottom: 18px;
             transition: all 0.3s ease;
         }
         
         .option-item input[type="radio"] {
-            margin-right: 15px;
-            width: 20px;
-            height: 20px;
-            accent-color: var(--secondary-color);
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
         }
         
         .option-item label {
             cursor: pointer;
             display: flex;
             align-items: center;
-            padding: 15px 20px;
+            padding: 18px 25px;
             border-radius: 12px;
             transition: all 0.3s ease;
             background: #f8f9fa;
-            border: 2px solid transparent;
+            border: 2px solid #e1e8ed;
             font-weight: 500;
+            font-size: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .option-item label::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: transparent;
+            transition: all 0.3s ease;
         }
         
         .option-item label:hover {
-            background: rgba(37, 117, 252, 0.1);
+            background: rgba(37, 117, 252, 0.08);
             border-color: rgba(37, 117, 252, 0.3);
             transform: translateX(5px);
         }
         
         .option-item input[type="radio"]:checked + label {
-            background: rgba(37, 117, 252, 0.15);
+            background: rgba(37, 117, 252, 0.12);
             border-color: var(--secondary-color);
             font-weight: 600;
+            box-shadow: 0 5px 15px rgba(37, 117, 252, 0.15);
+        }
+        
+        .option-item input[type="radio"]:checked + label::before {
+            background: var(--gradient-1);
+        }
+        
+        .option-item label::after {
+            content: "";
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #e1e8ed;
+            background: white;
+            transition: all 0.3s ease;
+        }
+        
+        .option-item input[type="radio"]:checked + label::after {
+            background: var(--gradient-1);
+            border-color: var(--secondary-color);
+            box-shadow: inset 0 0 0 3px white;
+        }
+        
+        .option-item .option-letter {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(37, 117, 252, 0.1);
+            color: var(--secondary-color);
+            font-weight: 700;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .option-item input[type="radio"]:checked + label .option-letter {
+            background: var(--gradient-1);
+            color: white;
         }
         
         .navigation {
@@ -307,6 +382,38 @@
             font-weight: 600;
             font-size: 18px;
             color: var(--primary-color);
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: #e1e8ed;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-1);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+        
+        .progress-fill::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
         
         .question-nav {
@@ -636,6 +743,10 @@
                 </div>
                 <div class="question-indicator" id="question-indicator"><i class="fas fa-list-ol"></i> Soal 1/30</div>
                 
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 3.33%;"></div>
+                </div>
+                
                 <div class="question-container">
                     <div class="question-number" id="question-number"><i class="fas fa-question-circle"></i> Soal 1</div>
                     <div class="question-text" id="question-text">Memuat soal...</div>
@@ -690,7 +801,7 @@
 
     <script>
         // Data token yang valid
-        const validTokens = ["EBK2023", "KONSTRUKSI", "XI2023", "DPIB123"];
+        const validTokens = ["EBK2023", "KONSTRUKSI", "AI2025", "XI2023", "DPIB123"];
         
         // Bank soal
         const questionBank = [
@@ -1161,6 +1272,7 @@
         const nextBtn = document.getElementById('next-btn');
         const submitBtn = document.getElementById('submit-btn');
         const questionNav = document.getElementById('question-nav');
+        const progressFill = document.getElementById('progress-fill');
         const resultName = document.getElementById('result-name');
         const scoreElement = document.getElementById('score');
         const shareBtn = document.getElementById('share-btn');
@@ -1272,6 +1384,10 @@
             questionIndicator.innerHTML = `<i class="fas fa-list-ol"></i> Soal ${index + 1}/${questions.length}`;
             questionNumber.innerHTML = `<i class="fas fa-question-circle"></i> Soal ${index + 1}`;
             
+            // Update progress bar
+            const progressPercentage = ((index + 1) / questions.length) * 100;
+            progressFill.style.width = `${progressPercentage}%`;
+            
             // Update teks soal
             questionText.textContent = questions[index].question;
             
@@ -1293,7 +1409,16 @@
                 
                 const label = document.createElement('label');
                 label.htmlFor = `option-${i}`;
-                label.textContent = option;
+                
+                const optionLetter = document.createElement('div');
+                optionLetter.className = 'option-letter';
+                optionLetter.textContent = String.fromCharCode(65 + i); // A, B, C, D, E
+                
+                const optionText = document.createElement('span');
+                optionText.textContent = option;
+                
+                label.appendChild(optionLetter);
+                label.appendChild(optionText);
                 
                 li.appendChild(input);
                 li.appendChild(label);
@@ -1409,9 +1534,9 @@
             showPage('result-page');
         }
         
-        // Fungsi untuk menyimpan hasil ke Google Sheets
+        // Fungsi untuk menyimpan hasil ke Google Sheets, sudah update new sheet
         function saveResultToGoogleSheets(score) {
-            const url = "https://script.google.com/macros/s/AKfycbzj0FbF_l2h0RfIIp4mclYhTRraxcOhVqB_QCd9iLo/dev";
+            const url = "https://script.google.com/macros/s/AKfycbxA1OB-Egf2MJG8o8z0s5e_lBeDnGloQkZBBk2M69jy-4ZVnh0l1HASsZzO_0Q9CVDH/exec";
             
             const data = {
                 name: studentName,
@@ -1508,5 +1633,4 @@
         }
     </script>
 </body>
-
 </html>
